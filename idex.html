@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="theme-color" content="#050408"/>
+  <title>Examen de Física · Perú 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ══ TOKENS ══ */
+    :root{
+      --bg:#050408; --s1:#0C0A10; --s2:#141018; --s3:#1C1822;
+      --gold:#C9A432; --gold2:#E2BF5A; --golda:rgba(201,164,50,.18);
+      --goldb:rgba(201,164,50,.28); --goldc:rgba(201,164,50,.08);
+      --ivory:#EDE8DF; --iv2:#9A9080; --iv3:#4A4640; --iv4:#2A2620;
+      --ok:#2E8C5C; --oka:rgba(46,140,92,.12); --okb:rgba(46,140,92,.35);
+      --er:#8C2A3A; --era:rgba(140,42,58,.12); --erb:rgba(140,42,58,.35);
+      --wa:#B87828; --waa:rgba(184,120,40,.1);
+      --teal:#2E7A5A;
+      --r:10px; --r-sm:7px;
+      /* Fuentes */
+      --f-serif:'DM Serif Display',Georgia,serif;
+      --f-sans:'DM Sans',system-ui,sans-serif;
+      --f-read:'Source Serif 4',Georgia,serif;
+    }
+
+    /* ══ RESET ══ */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html{font-size:16px;-webkit-text-size-adjust:100%}
+    body{
+      background:var(--bg);
+      font-family:var(--f-sans);
+      color:var(--ivory);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      overscroll-behavior:none;
+      min-height:100dvh;
+    }
+    input,button,textarea,select{font-family:inherit}
+    button{border:none;background:none;cursor:pointer}
+    img{display:block;max-width:100%}
+    ::-webkit-scrollbar{width:2px}
+    ::-webkit-scrollbar-thumb{background:var(--goldb)}
+
+    /* ══ LAYOUT ══ */
+    #app{
+      max-width:430px;
+      margin:0 auto;
+      min-height:100dvh;
+      position:relative;
+    }
+
+    /* ══ ANIMACIONES ══ */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+    .fu{animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+    .fi{animation:fadeIn .4s ease both}
+    .sd{animation:slideDown .32s cubic-bezier(.22,1,.36,1) both}
+
+    /* ══ COMPONENTES REUTILIZABLES ══ */
+    .section-label{
+      font-size:9px;font-weight:700;letter-spacing:3.5px;
+      color:var(--gold);text-transform:uppercase
+    }
+    .ornament{
+      display:flex;align-items:center;gap:10px;
+      font-size:8px;font-weight:600;letter-spacing:3.5px;
+      color:var(--gold);text-transform:uppercase
+    }
+    .ornament::before,.ornament::after{
+      content:'';flex:1;height:.5px;
+      background:linear-gradient(90deg,transparent,var(--goldb),transparent)
+    }
+    .card{
+      background:var(--s1);
+      border:1px solid rgba(201,164,50,.14);
+      border-radius:var(--r);
+      padding:18px 16px;
+    }
+    .pill{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:5px 12px;border-radius:20px;
+      font-size:9px;font-weight:600;letter-spacing:1.5px;
+      text-transform:uppercase;
+    }
+
+    /* ══ INPUTS ══ */
+    .inp{
+      background:#181520;
+      border:1.5px solid rgba(201,164,50,.18);
+      border-radius:8px;
+      padding:14px 14px;
+      color:var(--ivory);
+      font-size:17px;
+      font-family:var(--f-serif);
+      font-weight:400;
+      width:100%;
+      outline:none;
+      transition:border-color .2s,box-shadow .2s;
+      -webkit-appearance:none;
+    }
+    .inp:focus{border-color:rgba(201,164,50,.55);box-shadow:0 0 0 3px rgba(201,164,50,.08)}
+    .inp::placeholder{color:#3A3540;font-style:italic}
+
+    /* ══ AREA CARDS ══ */
+    .area-card{
+      display:flex;align-items:center;gap:14px;
+      padding:16px 14px;
+      border-radius:var(--r);
+      border:1.5px solid rgba(201,164,50,.12);
+      background:#12101A;
+      cursor:pointer;
+      transition:all .22s cubic-bezier(.22,1,.36,1);
+      width:100%;text-align:left;
+      -webkit-appearance:none;
+      touch-action:manipulation;
+    }
+    .area-card.sel{border-color:var(--teal);background:#0F1A14;
+      box-shadow:0 4px 24px rgba(0,0,0,.4),0 0 0 1px rgba(46,122,90,.2)}
+    .radio{
+      width:24px;height:24px;border-radius:50%;
+      border:2px solid rgba(201,164,50,.25);
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;transition:all .2s;
+    }
+    .radio.sel{border-color:var(--teal);background:rgba(46,122,90,.12)}
+    .radio-dot{width:10px;height:10px;border-radius:50%;background:var(--teal)}
+
+    /* ══ OPTION BUTTONS ══ */
+    .opt{
+      display:flex;align-items:flex-start;gap:11px;
+      padding:13px 14px;
+      background:#1C1828;
+      border:1.5px solid rgba(201,164,50,.1);
+      border-radius:8px;
+      cursor:pointer;text-align:left;width:100%;
+      transition:all .18s cubic-bezier(.22,1,.36,1);
+      touch-action:manipulation;
+      -webkit-appearance:none;
+    }
+    .opt:active:not([data-r]){transform:scale(.98);background:var(--golda)}
+    .opt:not([data-r]):hover{background:var(--golda);border-color:var(--goldb)}
+    .opt.ok{background:var(--oka);border-color:var(--ok)}
+    .opt.wrong{background:var(--era);border-color:var(--er)}
+    .opt-badge{
+      width:28px;height:28px;flex-shrink:0;
+      border-radius:6px;border:1.5px solid var(--iv3);
+      display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:700;color:var(--iv3);
+      transition:all .18s;background:transparent;
+    }
+    .opt.ok   .opt-badge{background:var(--ok);border-color:var(--ok);color:#fff}
+    .opt.wrong .opt-badge{background:var(--er);border-color:var(--er);color:#fff}
+
+    /* ══ CTA BUTTON ══ */
+    .cta{
+      width:100%;padding:18px;
+      background:linear-gradient(135deg,#C9A432,#E2BF5A,#C9A432);
+      color:#050408;
+      font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+      border-radius:10px;cursor:pointer;
+      transition:all .3s;
+      box-shadow:0 10px 36px rgba(201,164,50,.2);
+      touch-action:manipulation;-webkit-appearance:none;
+    }
+    .cta:active{transform:scale(.98);box-shadow:0 4px 16px rgba(201,164,50,.15)}
+    .cta:disabled{
+      background:#181520;color:#3A3548;
+      box-shadow:none;cursor:not-allowed;
+      border:1.5px solid rgba(201,164,50,.12);
+    }
+
+    /* ══ PROGRESS BAR ══ */
+    .prog-track{height:2px;background:var(--s3);border-radius:2px;overflow:hidden}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--golda),var(--gold));
+      transition:width .5s cubic-bezier(.22,1,.36,1);border-radius:2px}
+
+    /* ══ STATUS BADGE (esquina) ══ */
+    #status-badge{
+      position:fixed;bottom:14px;right:14px;z-index:9999;
+      padding:5px 12px;border-radius:20px;
+      display:flex;align-items:center;gap:6px;
+      font-size:8.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+    }
+    #status-badge .dot{width:6px;height:6px;border-radius:50%}
+
+    /* ══ NOISE ══ */
+    .noise::after{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity:.3;
+    }
+
+    /* ══ FEEDBACK BOX ══ */
+    .feedback{
+      margin-top:14px;padding:14px 15px;
+      border-radius:0 8px 8px 0;
+      border-left:3px solid;
+    }
+    .feedback.ok  {border-color:var(--ok);background:rgba(46,140,92,.06)}
+    .feedback.wrong{border-color:var(--er);background:rgba(140,42,58,.06)}
+    .feedback.skip{border-color:var(--wa);background:var(--waa)}
+
+    /* ══ SAFE AREA (iPhone notch) ══ */
+    .safe-top   {padding-top:env(safe-area-inset-top)}
+    .safe-bottom{padding-bottom:max(16px,env(safe-area-inset-bottom))}
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="status-badge" style="display:none"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   ⚠️  PEGA AQUÍ TU URL DE APPS SCRIPT DESPUÉS DE DEPLOY
+   Ejemplo: https://script.google.com/macros/s/XXXX/exec
+══════════════════════════════════════════════════════ */
+const APPS_SCRIPT_URL = 'TU_URL_APPS_SCRIPT_AQUI';
+
+/* ════════════════════════
+   CONSTANTES
+════════════════════════ */
+const PTS        = 2;
+const getTime    = t => t === 'TEORÍA' ? 20 : 50;
+const OL         = ['A','B','C','D'];
+const AREAS = [
+  {id:'bio', label:'Biomédicas',  sub:'Medicina · Enfermería · Farmacia',  icon:'🩺'},
+  {id:'ing', label:'Ingenierías', sub:'Civil · Sistemas · Electrónica',    icon:'⚙️'},
+  {id:'soc', label:'Sociales',    sub:'Derecho · Psicología · CCSS',       icon:'📚'}
+];
+
+/* ════════════════════════
+   BANCO LOCAL (fallback)
+════════════════════════ */
+const Q_LOCAL = [
+  {id:1,t:"Cinemática",tipo:"TEORÍA",q:"¿Qué tipo de magnitud es el <em>desplazamiento</em>?",o:["Escalar, solo tiene módulo","Vectorial: módulo, dirección y sentido","Escalar, se mide en metros","Vectorial, siempre mayor que la distancia"],r:1,tip:"El desplazamiento es <strong>vectorial</strong>: tiene módulo, dirección y sentido."},
+  {id:2,t:"Cinemática",tipo:"TEORÍA",q:"En el MRU la aceleración del móvil es:",o:["Positiva y constante","Negativa y creciente","Igual a cero en todo instante","Variable con el tiempo"],r:2,tip:"MRU: velocidad constante → a = 0."},
+  {id:3,t:"Cinemática",tipo:"TEORÍA",q:"En la gráfica d vs t del MRU, la pendiente representa:",o:["La aceleración","El desplazamiento total","La velocidad","El tiempo"],r:2,tip:"Pendiente = Δd/Δt = velocidad."},
+  {id:4,t:"Caída Libre",tipo:"TEORÍA",q:"Galileo demostró que dos cuerpos de distinta masa en caída libre:",o:["El pesado cae primero","El liviano cae primero","Llegan al mismo tiempo","El pesado cae más rápido"],r:2,tip:"g = 10 m/s² para todos los cuerpos. La masa no influye."},
+  {id:5,t:"Caída Libre",tipo:"TEORÍA",q:"En el punto más alto de un lanzamiento vertical, la velocidad es:",o:["Máxima","Igual a la inicial","Igual a cero","Opuesta a la inicial"],r:2,tip:"En la cima v = 0. El cuerpo se detiene antes de descender."},
+  {id:6,t:"Mov. Parabólico",tipo:"TEORÍA",q:"La componente horizontal de la velocidad en el movimiento parabólico:",o:["Aumenta con t","Se anula en la cima","Es constante","Igual a la componente vertical"],r:2,tip:"Horizontal: MRU → vₓ = v₀·cosθ = constante."},
+  {id:7,t:"Mov. Parabólico",tipo:"TEORÍA",q:"El ángulo de lanzamiento para máximo alcance horizontal es:",o:["30°","45°","60°","90°"],r:1,tip:"R = v₀²·sen(2θ)/g → máximo cuando θ = 45°."},
+  {id:8,t:"Leyes de Newton",tipo:"TEORÍA",q:"La 1ª Ley de Newton establece que si ΣF = 0:",o:["El cuerpo está en reposo","El cuerpo cambia de movimiento","El cuerpo mantiene reposo o MRU","El cuerpo siempre acelera"],r:2,tip:"Si ΣF⃗ = 0 → a = 0 → reposo o MRU (Ley de Inercia)."},
+  {id:9,t:"Leyes de Newton",tipo:"TEORÍA",q:"Si se duplica F sobre un cuerpo de masa constante, su aceleración:",o:["Se reduce a la mitad","Permanece igual","Se duplica","Aumenta cuatro veces"],r:2,tip:"a = F/m. Con m constante: F×2 → a×2."},
+  {id:10,t:"Leyes de Newton",tipo:"TEORÍA",q:"Las fuerzas de acción y reacción (3ª Ley):",o:["Actúan en el mismo cuerpo y se cancelan","Actúan en cuerpos distintos, igual módulo","Actúan en el mismo cuerpo en igual sentido","Actúan en cuerpos distintos con distinto módulo"],r:1,tip:"Acción–reacción: mismo módulo, sentidos opuestos, cuerpos distintos."},
+  {id:11,t:"Estática",tipo:"TEORÍA",q:"Para equilibrio estático deben cumplirse:",o:["Solo ΣF = 0","Solo ΣM = 0","ΣF = 0 y ΣM = 0 simultáneamente","Velocidad constante ≠ 0"],r:2,tip:"Equilibrio: ΣF⃗ = 0 (traslación) Y ΣM = 0 (rotación)."},
+  {id:12,t:"Trabajo y Energía",tipo:"TEORÍA",q:"El trabajo de una fuerza perpendicular al desplazamiento es:",o:["Máximo","Igual a F·d","Igual a cero","Siempre negativo"],r:2,tip:"W = F·d·cosθ. Si θ=90°: W = 0."},
+  {id:13,t:"Trabajo y Energía",tipo:"TEORÍA",q:"La energía mecánica se conserva cuando:",o:["Solo actúan fuerzas de contacto","La temperatura es constante","Solo actúan fuerzas conservativas","El cuerpo va en línea recta"],r:2,tip:"Conservación: E_mec = Eₖ + Ep = constante (sin fricción)."},
+  {id:14,t:"Análisis Vectorial",tipo:"TEORÍA",q:"El producto escalar de dos vectores perpendiculares es:",o:["Igual al producto de módulos","Máximo posible","Igual a cero","Siempre negativo"],r:2,tip:"A⃗·B⃗ = |A||B|cosθ. Si θ=90°: cos90°=0 → 0."},
+  {id:15,t:"Análisis Dimensional",tipo:"TEORÍA",q:"¿Cuál es la dimensión de la velocidad en el SI?",o:["[M·L·T⁻²]","[L·T⁻¹]","[M·L·T⁻¹]","[L·T⁻²]"],r:1,tip:"v = d/t → [L]/[T] = [L·T⁻¹] = m/s."},
+  {id:16,t:"Cinemática",tipo:"FÓRMULA",q:"La ecuación de <strong>Torricelli</strong> (sin tiempo t) del MRUV es:",o:["d = v₀t + ½at²","v = v₀ + at","v² = v₀² + 2·a·d","d = [(v₀+v)/2]·t"],r:2,tip:"v² = v₀² + 2·a·d. Útil cuando se conoce d y se busca v."},
+  {id:17,t:"Caída Libre",tipo:"FÓRMULA",q:"La altura máxima en lanzamiento vertical arriba es:",o:["h = g·t","h = v₀·t","h_máx = v₀²/(2g)","h = ½g·t²"],r:2,tip:"En cima v=0: 0 = v₀² − 2g·h → h = v₀²/(2g)."},
+  {id:18,t:"Leyes de Newton",tipo:"FÓRMULA",q:"La 2ª Ley de Newton en forma vectorial es:",o:["F = m/a","F = m·v","F = m·a","F = a/m"],r:2,tip:"F⃗ = m·a⃗. Unidades: 1 N = 1 kg·m/s²."},
+  {id:19,t:"Trabajo y Energía",tipo:"FÓRMULA",q:"La fórmula de la energía cinética es:",o:["Eₖ = m·v","Eₖ = m·v²","Eₖ = ½·m·v²","Eₖ = 2·m·v²"],r:2,tip:"Eₖ = ½mv². Si v×2 → Eₖ×4."},
+  {id:20,t:"Análisis Vectorial",tipo:"FÓRMULA",q:"Resultante de dos vectores perpendiculares A y B:",o:["R = A + B","R = |A−B|","R = √(A²+B²)","R = A·B"],r:2,tip:"Pitágoras: R = √(A²+B²). Ejemplo: 3-4-5."},
+  {id:21,t:"Cinemática",tipo:"CÁLCULO",q:"Móvil recorre <strong>d = 360 m</strong> en <strong>t = 15 s</strong> a velocidad constante:",o:["20 m/s","22 m/s","24 m/s","30 m/s"],r:2,tip:"v = d/t = 360/15 = 24 m/s."},
+  {id:22,t:"Cinemática",tipo:"CÁLCULO",q:"Cuerpo parte del reposo con <strong>a = 5 m/s²</strong>. Velocidad a los <strong>6 s</strong>:",o:["25 m/s","28 m/s","30 m/s","36 m/s"],r:2,tip:"v = v₀ + at = 0 + 5×6 = 30 m/s."},
+  {id:23,t:"Caída Libre",tipo:"CÁLCULO",q:"Piedra suelta desde <strong>h = 80 m</strong>. Tiempo de caída: (g = 10 m/s²)",o:["3 s","4 s","5 s","6 s"],r:1,tip:"80 = ½×10×t² → t² = 16 → t = 4 s."},
+  {id:24,t:"Caída Libre",tipo:"CÁLCULO",q:"Pelota lanzada arriba con <strong>v₀ = 30 m/s</strong>. Altura máxima: (g = 10 m/s²)",o:["30 m","40 m","45 m","50 m"],r:2,tip:"h = v₀²/(2g) = 900/20 = 45 m."},
+  {id:25,t:"Análisis Vectorial",tipo:"CÁLCULO",q:"<strong>F₁ = 6 N</strong> y <strong>F₂ = 8 N</strong> perpendiculares. Resultante:",o:["2 N","7 N","10 N","14 N"],r:2,tip:"R = √(36+64) = √100 = 10 N."},
+];
+
+/* ════════════════════════
+   ESTADO
+════════════════════════ */
+const S = {
+  screen:'loading', qs:Q_LOCAL, status:'loading',
+  nom:'', ape:'', area:'',
+  cur:0, sel:null, rev:false, sec:20,
+  results:[], timer:null
+};
+
+/* ════════════════════════
+   HELPERS
+════════════════════════ */
+const $  = id => document.getElementById(id);
+const ce = tag => document.createElement(tag);
+function toRoman(n){
+  const v=[50,40,10,9,5,4,1],s=["L","XL","X","IX","V","IV","I"];
+  let r='';for(let i=0;i<v.length;i++){while(n>=v[i]){r+=s[i];n-=v[i]}}return r;
+}
+function h(id,c){const e=$(id);if(e)e.innerHTML=c}
+function setStatus(type){
+  const b=$('status-badge');
+  if(!b||S.screen!=='land'){b.style.display='none';return;}
+  const isOk=type==='ok';
+  b.style.display='flex';
+  b.style.background=isOk?'rgba(46,122,90,.15)':'rgba(184,120,40,.1)';
+  b.style.border=`1px solid ${isOk?'rgba(46,122,90,.3)':'rgba(184,120,40,.25)'}`;
+  b.style.color=isOk?'#2E7A5A':'#B87828';
+  b.innerHTML=`<div class="dot" style="background:${isOk?'#2E7A5A':'#B87828'}"></div>
+    ${isOk?`Google Sheets · ${S.qs.length} pregs`:`Local · ${S.qs.length} pregs`}`;
+}
+
+/* ════════════════════════
+   RENDER PRINCIPAL
+════════════════════════ */
+function render(){
+  const app=$('app');
+  clearInterval(S.timer);
+  if(S.screen==='loading'){app.innerHTML=renderLoading();}
+  else if(S.screen==='land'){app.innerHTML=renderLanding();setStatus(S.status);}
+  else if(S.screen==='exam'){app.innerHTML=renderExam();startTimer();}
+  else if(S.screen==='results'){app.innerHTML=renderResults();saveResults();}
+}
+
+/* ── LOADING ── */
+function renderLoading(){
+  return`<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:20px;background:#0D0B12;padding:24px">
+    <svg width="56" height="56" viewBox="0 0 56 56">
+      <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(201,164,50,.12)" stroke-width="3"/>
+      <path d="M28 4 A24 24 0 0 1 52 28" fill="none" stroke="#C9A432" stroke-width="3"
+        stroke-linecap="round" style="animation:spin 1s linear infinite;transform-origin:28px 28px"/>
+    </svg>
+    <div style="text-align:center">
+      <div style="font-family:var(--f-serif);font-size:19px;font-style:italic;color:var(--ivory);
+        margin-bottom:6px">Cargando preguntas…</div>
+      <div class="section-label" style="opacity:.5">Conectando con Google Sheets</div>
+    </div>
+  </div>`;
+}
+
+/* ── LANDING ── */
+function renderLanding(){
+  const ok=S.nom.trim()&&S.ape.trim()&&S.area;
+  const aCards=AREAS.map((a,i)=>{
+    const sel=S.area===a.id;
+    return`<button onclick="selArea('${a.id}')" class="area-card fu ${sel?'sel':''}"
+      style="animation-delay:${.3+i*.07}s">
+      <div class="radio ${sel?'sel':''}">${sel?'<div class="radio-dot"></div>':''}</div>
+      <div style="width:52px;height:52px;border-radius:50%;flex-shrink:0;
+        background:#1C1828;border:2px solid ${sel?'#C9A432':'rgba(201,164,50,.15)'};
+        display:flex;align-items:center;justify-content:center;font-size:20px;
+        transition:border-color .22s">${a.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--f-serif);font-size:19px;color:${sel?'var(--ivory)':'var(--iv2)'};
+          margin-bottom:3px;transition:color .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          ${a.label}</div>
+        <div style="font-family:var(--f-serif);font-style:italic;font-size:11px;
+          color:${sel?'var(--iv3)':'var(--iv4)'};transition:color .2s">${a.sub}</div>
+      </div>
+    </button>`;
+  }).join('');
+
+  return`<div class="noise" style="background:#0D0B12;min-height:100dvh">
+
+    <!-- TOP BAR -->
+    <div class="safe-top" style="padding:16px 18px 14px;display:flex;justify-content:space-between;
+      align-items:center;border-bottom:1px solid rgba(201,164,50,.08)">
+      <span style="font-size:11px;font-weight:500;letter-spacing:2px;color:var(--iv3);
+        text-transform:uppercase">UNI · UNMS · PUCP · UNSA</span>
+      <div style="background:#181520;border:1px solid rgba(201,164,50,.2);border-radius:18px;
+        padding:5px 12px;text-align:center">
+        <span style="font-size:9px;font-weight:700;letter-spacing:2px;color:var(--iv2);
+          text-transform:uppercase;line-height:1.3;display:block">ADMISIÓN<br>2026</span>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div style="padding:36px 20px 38px;border-bottom:1px solid rgba(201,164,50,.07)">
+      <div class="fu" style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+        <div style="width:24px;height:2px;background:#2E7A5A;border-radius:2px"></div>
+        <span style="font-size:9px;font-weight:700;letter-spacing:4px;color:#2E7A5A;
+          text-transform:uppercase">Simulacro Oficial</span>
+      </div>
+      <div class="fu" style="animation-delay:.07s">
+        <div style="font-family:var(--f-serif);font-size:clamp(58px,15vw,72px);font-style:italic;
+          color:#D4B060;line-height:.88;letter-spacing:-2px">Examen</div>
+      </div>
+      <div class="fu" style="animation-delay:.12s;margin-bottom:24px">
+        <div style="font-family:var(--f-serif);font-size:clamp(32px,8vw,42px);
+          color:var(--ivory);letter-spacing:-1px;line-height:1">de Física</div>
+      </div>
+      <div class="fu" style="animation-delay:.17s;border-left:2.5px solid rgba(201,164,50,.3);
+        padding-left:16px">
+        <p style="font-family:var(--f-serif);font-style:italic;color:var(--iv2);
+          font-size:15px;line-height:1.65">
+          <span style="color:var(--ivory);font-style:normal;font-weight:600">${S.qs.length} preguntas</span>
+          &nbsp;·&nbsp;Corrección instantánea&nbsp;·&nbsp;Tips de resolución
+        </p>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div style="padding:28px 20px 40px;background:#100E18">
+
+      <!-- NOMBRE / APELLIDO -->
+      <div class="fu" style="animation-delay:.22s;
+        display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:26px">
+        <div>
+          <div class="section-label" style="margin-bottom:9px">Nombre</div>
+          <input id="inp-nom" class="inp" value="${S.nom}" placeholder="David"
+            oninput="S.nom=this.value;updateCTA()" autocomplete="given-name"/>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:9px">Apellido</div>
+          <input id="inp-ape" class="inp" value="${S.ape}" placeholder="Salas"
+            oninput="S.ape=this.value;updateCTA()" autocomplete="family-name"/>
+        </div>
+      </div>
+
+      <!-- ÁREA -->
+      <div class="fu" style="animation-delay:.27s">
+        <div class="section-label" style="margin-bottom:14px">Área de Postulación</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px">
+          ${aCards}
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="fu" style="animation-delay:.42s">
+        <button id="cta" class="cta" onclick="goExam()" ${ok?'':'disabled'}>
+          ${ok?'Iniciar Examen  ◆':'Complete sus datos'}
+        </button>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="safe-bottom" style="text-align:center;margin-top:30px;padding-top:20px;
+        border-top:.5px solid rgba(201,164,50,.07)">
+        <div style="font-size:8px;color:var(--iv4);letter-spacing:2px;text-transform:uppercase;
+          margin-bottom:8px">Simulacro no oficial · Solo para estudio</div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:8px">
+          <div style="width:18px;height:.5px;background:rgba(201,164,50,.15)"></div>
+          <span style="font-family:var(--f-serif);font-size:10px;font-style:italic;
+            color:var(--gold);opacity:.35">Física · Perú · 2026</span>
+          <div style="width:18px;height:.5px;background:rgba(201,164,50,.15)"></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── EXAM ── */
+function renderExam(){
+  const q=S.qs[S.cur];
+  const totalSec=getTime(q.tipo);
+  const pctT=S.sec/totalSec;
+  const R=24,C=2*Math.PI*R;
+  const col=pctT>.5?'#C9A432':pctT>.25?'#B87828':'#8C2A3A';
+  const co=S.results.filter(r=>r.correct).length;
+  const wr=S.results.filter(r=>!r.correct).length;
+  const pct=S.cur/S.qs.length*100;
+  const expired=S.rev&&S.sel===null;
+  const isOk=S.sel===q.r;
+  const aL=AREAS.find(a=>a.id===S.area)?.label||'';
+
+  const opts=q.o.map((op,i)=>{
+    let cls='opt',lc='var(--iv3)',badgeBg='transparent';
+    if(S.rev){
+      if(i===q.r){cls='opt ok';lc='var(--ok)';}
+      else if(i===S.sel&&!isOk){cls='opt wrong';lc='var(--er)';}
+      else{lc='var(--iv4)';}
+    } else if(S.sel===i){cls='opt';lc='var(--gold)';}
+    const dr=S.rev?'data-r="1"':'';
+    return`<button ${dr} class="${cls}" onclick="pick(${i})"
+      style="${S.sel===i&&!S.rev?'background:var(--golda);border-color:var(--gold)':''}">
+      <div class="opt-badge" style="color:${lc};border-color:${lc}">${OL[i]}</div>
+      <span style="font-size:14.5px;line-height:1.68;color:${S.rev&&(i===q.r||i===S.sel)?'var(--ivory)':'var(--iv2)'};
+        font-weight:400;letter-spacing:.1px">${op}</span>
+    </button>`;
+  }).join('');
+
+  const feedbackHtml=S.rev?`
+    <div class="feedback sd ${expired?'skip':isOk?'ok':'wrong'}">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+        margin-bottom:8px;color:${expired?'var(--wa)':isOk?'var(--ok)':'var(--er)'}">
+        ${expired?'⏱ Tiempo agotado':isOk?'✓ Correcto':'✗ Incorrecto'}</div>
+      <p style="font-family:var(--f-read);font-size:13.5px;color:#C8C2BA;
+        line-height:1.8;letter-spacing:.1px">${q.tip}</p>
+    </div>`:'';
+
+  const navHtml=S.rev?`
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:var(--f-serif);font-style:italic;font-size:13px;
+        color:${expired?'var(--wa)':isOk?'var(--ok)':'var(--er)'}">
+        ${expired?'Sin tiempo':isOk?'✓ Correcto':'✗ Incorrecto'}</span>
+      <button onclick="next()" style="background:transparent;border:1.5px solid rgba(201,164,50,.3);
+        border-radius:8px;padding:11px 20px;color:var(--gold);font-size:9px;font-weight:700;
+        letter-spacing:3px;text-transform:uppercase;cursor:pointer;touch-action:manipulation">
+        ${S.cur<S.qs.length-1?'Siguiente →':'Ver resultado →'}</button>
+    </div>`
+    :`<div style="text-align:center">
+        <span style="font-size:9px;color:var(--iv4);letter-spacing:2.5px;text-transform:uppercase">
+          Seleccione una alternativa</span></div>`;
+
+  return`
+  <div style="background:var(--bg);min-height:100dvh;display:flex;flex-direction:column">
+    <!-- HEADER -->
+    <div class="safe-top" style="background:rgba(5,4,8,.97);backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(201,164,50,.12);padding:12px 18px 10px;flex-shrink:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div>
+          <div style="font-family:var(--f-serif);font-size:13px;font-style:italic;color:var(--ivory)">
+            ${S.nom} ${S.ape}</div>
+          <div style="font-size:9px;color:var(--iv3);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px">
+            ${aL}</div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center">
+          <div style="text-align:center">
+            <div style="font-family:var(--f-serif);font-size:20px;font-style:italic;color:var(--ok)">${co}</div>
+            <div style="font-size:7px;color:var(--iv4);letter-spacing:1.5px;text-transform:uppercase">ok</div>
+          </div>
+          <div style="width:.5px;height:22px;background:rgba(201,164,50,.2)"></div>
+          <div style="text-align:center">
+            <div style="font-family:var(--f-serif);font-size:20px;font-style:italic;color:var(--er)">${wr}</div>
+            <div style="font-size:7px;color:var(--iv4);letter-spacing:1.5px;text-transform:uppercase">err</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="prog-track" style="flex:1"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <span style="font-family:var(--f-serif);font-size:11px;font-style:italic;color:var(--gold);
+          min-width:32px;text-align:right">${toRoman(S.cur+1)}</span>
+      </div>
+    </div>
+
+    <!-- TIMER -->
+    <div class="sd" style="margin:12px 16px 0;background:#181520;
+      border:1px solid rgba(201,164,50,.14);border-radius:var(--r);
+      padding:12px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0">
+      <div style="position:relative;width:54px;height:54px;flex-shrink:0">
+        <svg width="54" height="54" style="transform:rotate(-90deg)">
+          <circle cx="27" cy="27" r="${R}" fill="none" stroke="#1C1822" stroke-width="2"/>
+          <circle id="tarc" cx="27" cy="27" r="${R}" fill="none" stroke="${col}" stroke-width="2"
+            stroke-dasharray="${C.toFixed(2)}" stroke-dashoffset="${(C-C*pctT).toFixed(2)}"
+            stroke-linecap="round" style="transition:stroke-dashoffset .85s linear,stroke .3s"/>
+        </svg>
+        <div id="tnum" style="position:absolute;inset:0;display:flex;align-items:center;
+          justify-content:center;font-family:var(--f-serif);font-size:15px;font-style:italic;
+          font-weight:600;color:${col}">${S.sec}</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div id="tlbl" style="font-size:13px;font-weight:500;color:var(--ivory);margin-bottom:2px">
+          ${S.sec>0?`${S.sec}s restantes`:'Tiempo agotado'}</div>
+        <div style="font-size:11px;color:var(--iv3)">${q.t}</div>
+      </div>
+      <div style="background:rgba(201,164,50,.08);border:1px solid rgba(201,164,50,.22);
+        border-radius:6px;padding:5px 9px;flex-shrink:0">
+        <span style="font-size:8px;font-weight:700;letter-spacing:1.5px;color:var(--gold);
+          text-transform:uppercase">${q.tipo}</span>
+      </div>
+    </div>
+
+    <!-- QUESTION CARD -->
+    <div class="sd" style="flex:1;margin:10px 16px 0;background:#181520;
+      border:1.5px solid rgba(201,164,50,.14);border-top:2.5px solid var(--gold);
+      border-radius:var(--r);padding:18px 16px;display:flex;flex-direction:column;
+      overflow-y:auto;-webkit-overflow-scrolling:touch">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:7px">
+          <div style="width:3px;height:16px;background:var(--gold);border-radius:2px"></div>
+          <span style="font-size:10px;font-weight:600;letter-spacing:1.8px;color:var(--gold);
+            text-transform:uppercase">${q.t}</span>
+        </div>
+        <span style="font-family:var(--f-serif);font-size:22px;font-style:italic;
+          color:rgba(201,164,50,.18)">${toRoman(S.cur+1)}</span>
+      </div>
+
+      <p style="font-family:var(--f-read);font-size:clamp(15px,4.2vw,17px);font-weight:400;
+        line-height:1.82;color:#F0EBE2;margin-bottom:20px;letter-spacing:.08px">${q.q}</p>
+
+      <div style="display:flex;flex-direction:column;gap:8px" id="opts">${opts}</div>
+      ${feedbackHtml}
+    </div>
+
+    <!-- NAV -->
+    <div class="safe-bottom" style="padding:12px 16px;border-top:1px solid rgba(201,164,50,.1);
+      background:rgba(5,4,8,.97);flex-shrink:0" id="nav">${navHtml}</div>
+  </div>`;
+}
+
+/* ── RESULTS ── */
+function renderResults(){
+  const {qs,results,nom,ape,area}=S;
+  const cor=results.filter(r=>r.correct).length;
+  const err=results.filter(r=>!r.correct).length;
+  const skip=results.filter(r=>r.sel===-1).length;
+  const pts=cor*PTS;
+  const pct=cor/qs.length;
+  const barCol=pts>=80?'var(--ok)':pts>=60?'var(--wa)':'var(--er)';
+  const msg=pts>=80?`¡Excelente, ${nom}! Listo para el examen de admisión.`
+    :pts>=60?`${nom}, buen resultado. Repasa los temas más débiles.`
+    :`${nom}, sigue practicando. Enfócate en los temas con más errores.`;
+  const aL=AREAS.find(a=>a.id===area)?.label||'';
+
+  const TC={'Cinemática':'#C9A432','Caída Libre':'#A07830','Mov. Parabólico':'#8A6820',
+    'Leyes de Newton':'#E2BF5A','Estática':'#6A9080','Trabajo y Energía':'#8A9060',
+    'Análisis Vectorial':'#9080A0','Análisis Dimensional':'#80A090'};
+
+  const tStats=Object.keys(TC).map(t=>{
+    const tqs=qs.filter(q=>q.t===t);
+    const c=results.filter(r=>r.tema===t&&r.correct).length;
+    return{t,c,tot:tqs.length,p:tqs.length?c/tqs.length:0,col:TC[t]};
+  }).filter(x=>x.tot>0);
+
+  const tipoStats=['TEORÍA','FÓRMULA','CÁLCULO'].map(tipo=>{
+    const tqs=qs.filter(q=>q.tipo===tipo);
+    const c=results.filter(r=>r.tipo===tipo&&r.correct).length;
+    return{tipo,c,tot:tqs.length,p:tqs.length?c/tqs.length:0};
+  });
+
+  const tHtml=tStats.map(({t,c,tot,p,col})=>`
+    <div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:11px;color:var(--iv2)">${t}</span>
+        <span style="font-family:var(--f-serif);font-style:italic;font-size:11px;color:${col}">
+          ${c}/${tot}</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" style="width:${p*100}%;background:${col}"></div></div>
+    </div>`).join('');
+
+  const tipHtml=tipoStats.map(({tipo,c,tot,p})=>`
+    <div style="background:var(--s1);border:1px solid rgba(201,164,50,.1);
+      border-radius:8px;padding:12px;text-align:center">
+      <div class="section-label" style="margin-bottom:7px;font-size:7.5px">${tipo}</div>
+      <div style="font-family:var(--f-serif);font-size:22px;font-style:italic;color:var(--ivory)">
+        ${c}<span style="font-size:11px;color:var(--iv3)">/${tot}</span></div>
+      <div class="prog-track" style="margin-top:7px">
+        <div class="prog-fill" style="width:${p*100}%"></div></div>
+    </div>`).join('');
+
+  const errors=results.filter(r=>!r.correct);
+  const errHtml=errors.slice(0,5).map((r,idx)=>{
+    const qO=qs.find(q=>q.id===r.id);
+    if(!qO)return'';
+    return`<div style="margin-bottom:16px;padding-bottom:16px;
+      border-bottom:${idx<Math.min(errors.length,5)-1?'.5px solid #141018':'none'}">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:8px;color:var(--gold);letter-spacing:2px;text-transform:uppercase">
+          ${qO.t}</span>
+        <span style="font-size:7.5px;color:var(--iv4);text-transform:uppercase">${qO.tipo}</span>
+      </div>
+      <p style="font-family:var(--f-read);font-size:12px;color:var(--iv2);line-height:1.6;
+        margin-bottom:8px">${qO.q}</p>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <span style="font-size:10px;padding:3px 8px;background:var(--oka);
+          border:1px solid var(--okb);border-radius:4px;color:var(--ok)">✓ ${qO.o[qO.r]}</span>
+        ${r.sel>=0?`<span style="font-size:10px;padding:3px 8px;background:var(--era);
+          border:1px solid var(--erb);border-radius:4px;color:var(--er)">✗ ${qO.o[r.sel]}</span>`:''}
+      </div>
+      <p style="font-family:var(--f-read);font-size:11px;font-style:italic;color:var(--iv3);
+        line-height:1.7;margin-top:8px">${qO.tip}</p>
+    </div>`;
+  }).join('');
+
+  return`
+  <div style="background:var(--bg);min-height:100dvh;padding-bottom:40px">
+    <!-- HEADER -->
+    <div class="safe-top" style="background:rgba(5,4,8,.97);border-bottom:1px solid rgba(201,164,50,.12);
+      padding:14px 18px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-family:var(--f-serif);font-size:13px;font-style:italic;color:var(--ivory)">
+          ${nom} ${ape}</div>
+        <div style="font-size:8.5px;color:var(--iv3);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px">
+          ${aL}</div>
+      </div>
+      <div class="pill" style="background:rgba(201,164,50,.08);border:1px solid rgba(201,164,50,.2);
+        color:var(--gold)">Resultados</div>
+    </div>
+
+    <div style="padding:24px 18px">
+      <!-- SCORE -->
+      <div class="fu" style="text-align:center;margin-bottom:28px">
+        <div class="section-label" style="margin-bottom:10px;opacity:.7">Puntuación Final</div>
+        <div style="font-family:var(--f-serif);font-size:clamp(80px,22vw,96px);
+          font-style:italic;color:${barCol};line-height:.85;margin-bottom:4px">${pts}</div>
+        <div style="font-family:var(--f-serif);font-style:italic;font-size:13px;color:var(--iv2)">
+          puntos de 100</div>
+        <div style="margin:14px auto 0;width:55%;height:.5px;
+          background:linear-gradient(90deg,transparent,${barCol},transparent)"></div>
+      </div>
+
+      <!-- STATS -->
+      <div class="fu" style="animation-delay:.1s;display:grid;grid-template-columns:repeat(3,1fr);
+        gap:10px;margin-bottom:24px">
+        ${[['✓',cor,'Correctas','var(--ok)'],['✗',err,'Errores','var(--er)'],['–',skip,'Sin resp','var(--wa)']].map(([ic,v,l,c])=>`
+        <div style="background:var(--s1);border:1px solid ${c}33;border-radius:9px;
+          padding:12px 6px;text-align:center">
+          <div style="font-size:12px;color:${c};margin-bottom:3px">${ic}</div>
+          <div style="font-family:var(--f-serif);font-size:26px;font-style:italic;color:${c}">${v}</div>
+          <div style="font-size:7.5px;color:var(--iv4);letter-spacing:1.5px;text-transform:uppercase;
+            margin-top:3px">${l}</div>
+        </div>`).join('')}
+      </div>
+
+      <!-- MSG -->
+      <div class="fu card" style="animation-delay:.15s;border-left:2.5px solid ${barCol};
+        border-radius:0 var(--r) var(--r) 0;margin-bottom:24px;padding:13px 15px">
+        <p style="font-family:var(--f-read);font-size:14px;font-style:italic;color:var(--iv2);
+          line-height:1.7">${msg}</p>
+      </div>
+
+      <!-- POR TEMA -->
+      <div class="fu" style="animation-delay:.2s;margin-bottom:24px">
+        <div class="ornament" style="margin-bottom:14px">Por Tema</div>
+        ${tHtml}
+      </div>
+
+      <!-- POR TIPO -->
+      <div class="fu" style="animation-delay:.25s;margin-bottom:24px">
+        <div class="ornament" style="margin-bottom:14px">Por Tipo</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px">${tipHtml}</div>
+      </div>
+
+      <!-- ERRORES -->
+      ${errors.length?`
+      <div class="fu card" style="animation-delay:.3s;margin-bottom:24px">
+        <div class="ornament" style="margin-bottom:14px">
+          Revisión de Errores (${errors.length})</div>
+        ${errHtml}
+      </div>`:''}
+
+      <button onclick="restart()" style="width:100%;padding:15px;
+        border:1.5px solid rgba(201,164,50,.2);border-radius:9px;
+        background:transparent;color:var(--iv2);font-size:9.5px;font-weight:600;
+        letter-spacing:3.5px;text-transform:uppercase;cursor:pointer;
+        touch-action:manipulation">
+        Nuevo Simulacro  ◇
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ════════════════════════
+   ACCIONES
+════════════════════════ */
+function selArea(id){
+  S.area=id;
+  render();
+}
+
+function updateCTA(){
+  const ok=S.nom.trim()&&S.ape.trim()&&S.area;
+  const btn=$('cta');
+  if(!btn)return;
+  btn.disabled=!ok;
+  btn.textContent=ok?'Iniciar Examen  ◆':'Complete sus datos';
+}
+
+function goExam(){
+  if(!S.nom.trim()||!S.ape.trim()||!S.area)return;
+  S.screen='exam';S.cur=0;S.sel=null;S.rev=false;S.results=[];
+  S.sec=getTime(S.qs[0]?.tipo||'TEORÍA');
+  render();
+}
+
+function startTimer(){
+  clearInterval(S.timer);
+  const q=S.qs[S.cur];
+  if(!q||S.rev)return;
+  const totalSec=getTime(q.tipo);
+  const R=24,C=2*Math.PI*R;
+  S.timer=setInterval(()=>{
+    S.sec--;
+    if(S.sec<=0){
+      clearInterval(S.timer);
+      S.results.push({id:q.id,tema:q.t,tipo:q.tipo,sel:-1,correct:false,
+        tip:q.tip,correctAns:q.o[q.r],chosenAns:null});
+      S.rev=true;S.sel=null;S.sec=0;
+      render();return;
+    }
+    // Actualización ligera del timer
+    const pctT=S.sec/totalSec;
+    const col=pctT>.5?'#C9A432':pctT>.25?'#B87828':'#8C2A3A';
+    const arc=$('tarc'),num=$('tnum'),lbl=$('tlbl');
+    if(arc){arc.style.strokeDashoffset=C-C*pctT;arc.setAttribute('stroke',col);}
+    if(num){num.textContent=S.sec;num.style.color=col;}
+    if(lbl){lbl.textContent=`${S.sec}s restantes`;}
+  },1000);
+}
+
+function pick(i){
+  if(S.rev)return;
+  clearInterval(S.timer);
+  const q=S.qs[S.cur];
+  const correct=i===q.r;
+  S.sel=i;S.rev=true;
+  S.results.push({id:q.id,tema:q.t,tipo:q.tipo,sel:i,correct,
+    tip:q.tip,correctAns:q.o[q.r],chosenAns:q.o[i]});
+  render();
+}
+
+function next(){
+  clearInterval(S.timer);
+  if(S.cur>=S.qs.length-1){S.screen='results';render();return;}
+  S.cur++;S.sel=null;S.rev=false;
+  S.sec=getTime(S.qs[S.cur]?.tipo||'TEORÍA');
+  render();
+}
+
+function restart(){
+  clearInterval(S.timer);
+  S.screen='land';S.nom='';S.ape='';S.area='';S.results=[];S.cur=0;
+  render();
+}
+
+/* ════════════════════════
+   GUARDAR RESULTADOS → Apps Script
+════════════════════════ */
+function saveResults(){
+  if(APPS_SCRIPT_URL==='TU_URL_APPS_SCRIPT_AQUI')return;
+  const cor=S.results.filter(r=>r.correct).length;
+  const err=S.results.filter(r=>!r.correct).length;
+  const skip=S.results.filter(r=>r.sel===-1).length;
+  fetch(APPS_SCRIPT_URL,{
+    method:'POST',
+    body:JSON.stringify({
+      action:'guardar_resultado',
+      nom:S.nom, ape:S.ape, area:S.area,
+      pts:cor*PTS, cor, err, skip, total:S.qs.length
+    })
+  }).catch(()=>{});
+}
+
+/* ════════════════════════
+   INICIALIZACIÓN
+════════════════════════ */
+render(); // muestra loading
+
+// Carga preguntas desde Apps Script
+if(APPS_SCRIPT_URL!=='TU_URL_APPS_SCRIPT_AQUI'){
+  fetch(`${APPS_SCRIPT_URL}?action=preguntas`)
+    .then(r=>{if(!r.ok)throw new Error();return r.json();})
+    .then(d=>{
+      if(d.preguntas&&d.preguntas.length>=5){
+        S.qs=d.preguntas;S.status='ok';
+      } else {S.status='fallback';}
+    })
+    .catch(()=>{S.status='fallback';})
+    .finally(()=>{S.screen='land';render();});
+} else {
+  // Sin URL configurada → banco local directo
+  setTimeout(()=>{S.status='fallback';S.screen='land';render();},800);
+}
+</script>
+</body>
+</html>
